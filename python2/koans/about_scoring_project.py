@@ -33,9 +33,55 @@ from runner.koan import *
 #
 # Your goal is to write the score method.
 
+def filter_num(dice,num):
+    def one_finder(roll): return roll == num
+    return filter(one_finder, dice)
+
+
+def triple_present(dice,num):
+    return len(filter_num(dice,num)) >= 3
+
+
+def score_single(roll):
+    if roll == 5:
+        return 50
+    elif roll == 1:
+        return 100
+    else:
+        return 0
+
+
+def score_triples(dice):
+    score = 0
+    if triple_present(dice,1):
+        score = 1000
+    else:
+        for roll in range(2,7):
+            if triple_present(dice,roll):
+                score = roll * 100
+    return score
+
+
+def strip_triples(dice):
+    dice_without_triples = dice
+    for roll in range(1,7):
+        if triple_present(dice,roll):
+            i=0
+            while i < 3:
+                i+=1
+                dice_without_triples.remove(roll)
+    return dice_without_triples
+
+
+
 def score(dice):
-    # You need to write this method
-    pass
+    score = 0
+    if dice != []:
+        score += score_triples(dice)
+        dice_without_triples = strip_triples(dice)
+        for roll in dice_without_triples:
+            score += score_single(roll)
+    return score
 
 
 class AboutScoringProject(Koan):
